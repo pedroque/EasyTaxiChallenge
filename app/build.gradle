@@ -4,29 +4,128 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'realm-android'
+
+ext.versionMajor = 0
+ext.versionMinor = 1
+ext.versionPatch = 0
+
 android {
-    compileSdkVersion 26
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
     defaultConfig {
         applicationId "com.pedroabinajm.easytaxichallenge"
-        minSdkVersion 15
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode computeVersionCode()
+        versionName computeVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        debug {
+            storeFile file('../keystore/debug.keystore')
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+kapt {
+    generateStubs = true
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    kapt "com.android.databinding:compiler:$kotlin_data_binding_version"
+
+    // Android Support
+    implementation "com.android.support:appcompat-v7:$android_support_verion"
+    implementation "com.android.support:recyclerview-v7:$android_support_verion"
+    implementation "com.android.support:cardview-v7:$android_support_verion"
+    implementation "com.android.support:design:$android_support_verion"
+
+    // Play services
+    implementation "com.google.android.gms:play-services-location:$google_play_services_version"
+    implementation "com.google.android.gms:play-services-maps:$google_play_services_version"
+    implementation "com.google.android.gms:play-services-places:$google_play_services_version"
+
+    // Fresco Lib
+    implementation "com.facebook.fresco:fresco:$fresco_version"
+
+    // Rx
+    implementation "io.reactivex.rxjava2:rxjava:$rx_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version") {
+        exclude module: 'okhttp'
+    }
+    implementation "com.squareup.okhttp3:okhttp:$ok_http_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$ok_http_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson_converter_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_rx_adapter_version"
+    implementation "com.google.code.gson:gson:$gson_version"
+
+    // DI
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+
+    // ViewModel and LiveData
+    implementation "android.arch.lifecycle:extensions:$lifecycle_extensions_version"
+
+    // Test dependencies
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "android.arch.core:core-testing:$lifecycle_extensions_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.powermock:powermock-module-junit4:$power_mockito"
+    testImplementation "org.powermock:powermock-api-mockito2:$power_mockito"
+
+    // Android test dependencies
+    androidTestImplementation "com.android.support.test:runner:$testrunner_version"
+    androidTestImplementation "com.android.support.test:rules:$testrunner_version"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$espresso_version", {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+
+    // Android test DI
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
+}
+
+@SuppressWarnings("GrMethodMayBeStatic")
+def computeVersionName() {
+    return "${versionMajor}.${versionMinor}.${versionPatch}"
+}
+
+@SuppressWarnings("GrMethodMayBeStatic")
+def computeVersionCode() {
+    return (versionMajor * 1_000_000) + (versionMinor * 1_000) + versionPatch
 }
