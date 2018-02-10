@@ -16,13 +16,16 @@
 
 package com.pedroabinajm.easytaxichallenge.di.module
 
+import com.pedroabinajm.easytaxichallenge.di.ActivityScope
+import com.pedroabinajm.easytaxichallenge.ui.map.MapActivity
 import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class ActivityModule {
 
-//    @ActivityScope
-//    @ContributesAndroidInjector(modules = [TeacherModule::class])
-//    internal abstract fun contributeTeacherActivity(): TeacherActivity
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [PlaceModule::class])
+    internal abstract fun contributeMapActivity(): MapActivity
 
 }

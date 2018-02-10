@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="AppTheme.Transparent">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+</resources>
