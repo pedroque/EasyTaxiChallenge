@@ -1,4 +1,6 @@
 package com.pedroabinajm.easytaxichallenge.app
 
 
-interface Preferences
+interface Preferences{
+    var lastPlaceId: String?
+}

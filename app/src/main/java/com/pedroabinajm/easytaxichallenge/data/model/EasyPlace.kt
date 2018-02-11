@@ -18,14 +18,18 @@ open class EasyPlace : RealmObject, Parcelable {
 
     var description: String? = null
 
+    var bookmark: Boolean = false
+
     constructor()
 
-    constructor(id: String, name: String, latitude: Double, longitude: Double, description: String?) {
+    constructor(id: String, name: String, latitude: Double, longitude: Double, description: String?,
+                bookmark: Boolean) {
         this.id = id
         this.name = name
         this.latitude = latitude
         this.longitude = longitude
         this.description = description
+        this.bookmark = bookmark
     }
 
     constructor(source: Parcel) : this(
@@ -33,7 +37,8 @@ open class EasyPlace : RealmObject, Parcelable {
             source.readString(),
             source.readDouble(),
             source.readDouble(),
-            source.readString()
+            source.readString(),
+            source.readByte() == 1.toByte()
     )
 
     override fun describeContents() = 0
@@ -44,6 +49,7 @@ open class EasyPlace : RealmObject, Parcelable {
         writeDouble(latitude)
         writeDouble(longitude)
         writeString(description)
+        writeByte(if (bookmark) 1 else 0)
     }
 
     companion object {

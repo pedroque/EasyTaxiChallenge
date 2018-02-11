@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="place"
+            type="com.pedroabinajm.easytaxichallenge.data.model.EasyPlace" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="@dimen/default_margin">
+
+        <TextView
+            android:id="@+id/place_name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{place.name}"
+            app:showIf="@{place.name != null}"
+            tools:text="Casa" />
+
+        <TextView
+            android:id="@+id/place_description_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{place.description}"
+            app:showIf="@{place.description != null}"
+            tools:text="Rua Luis Gois, 206, Ap. 92" />
+
+    </LinearLayout>
+</layout>

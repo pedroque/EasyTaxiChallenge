@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.pedroabinajm.easytaxichallenge.utils.Constants
 
 
-fun AppCompatActivity.doOnCheckPermissions(vararg permissions: String, doOn: () -> Unit) {
+fun AppCompatActivity.doOnCheckPermissions(doOn: () -> Unit, vararg permissions: String) {
     if (permissions.any { ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }) {
         ActivityCompat.requestPermissions(this,
                 permissions,

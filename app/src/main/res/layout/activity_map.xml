@@ -1,32 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="@bool/transluscent_fitsSystemWindows">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.design.internal.ScrimInsetsFrameLayout
+    <data>
+
+        <variable
+            name="place"
+            type="com.pedroabinajm.easytaxichallenge.data.model.EasyPlace" />
+    </data>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="@bool/transluscent_fitsSystemWindows"
-        app:insetForeground="@color/transparent">
+        android:fitsSystemWindows="@bool/transluscent_fitsSystemWindows">
 
-        <RelativeLayout
+        <android.support.design.internal.ScrimInsetsFrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="@bool/transluscent_fitsSystemWindows"
+            app:insetForeground="@color/transparent">
 
-            <fragment
-                android:id="@+id/map"
-                android:name="com.google.android.gms.maps.MapFragment"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cameraTargetLat="-23.533773"
-                app:cameraTargetLng="-46.625290"
-                app:cameraZoom="13"
-                app:uiTiltGestures="false" />
+                android:layout_height="match_parent">
 
-        </RelativeLayout>
-    </android.support.design.internal.ScrimInsetsFrameLayout>
+                <com.pedroabinajm.easytaxichallenge.ui.map.PlaceView
+                    android:id="@+id/place_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:place="@{place}"/>
 
-</android.support.v4.widget.DrawerLayout>
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.MapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cameraTargetLat="-23.533773"
+                    app:cameraTargetLng="-46.625290"
+                    app:cameraZoom="13"
+                    app:uiTiltGestures="false" />
+
+            </RelativeLayout>
+        </android.support.design.internal.ScrimInsetsFrameLayout>
+
+    </android.support.v4.widget.DrawerLayout>
+</layout>
