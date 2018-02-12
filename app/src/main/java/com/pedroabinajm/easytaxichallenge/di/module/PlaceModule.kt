@@ -2,6 +2,8 @@ package com.pedroabinajm.easytaxichallenge.di.module
 
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDao
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDaoImpl
+import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapper
+import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapperImpl
 import com.pedroabinajm.easytaxichallenge.data.location.FusedLocator
 import com.pedroabinajm.easytaxichallenge.data.location.Locator
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepository
@@ -31,6 +33,10 @@ class PlaceModule {
     @Provides
     @Reusable
     internal fun provideLocator(locator: FusedLocator): Locator = locator
+
+    @Provides
+    @Reusable
+    internal fun provideAddressMapper(addressMapper: AddressMapperImpl): AddressMapper = addressMapper
 
     @Provides
     @Reusable

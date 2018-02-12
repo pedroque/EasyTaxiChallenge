@@ -31,7 +31,9 @@ class PlaceRepositoryImpl @Inject constructor(
 
     override fun saveLastPlace(easyPlace: EasyPlace) {
         getLastPlace()?.let {
-            placeDataSource.delete(it.id)
+            if (!it.bookmark) {
+                placeDataSource.delete(it.id)
+            }
         }
         placeDataSource.savePlace(easyPlace)
         preferences.lastPlaceId = easyPlace.id
