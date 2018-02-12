@@ -2,4 +2,5 @@
     <string name="app_name">EasyTaxi Challenge</string>
     <string name="network_error">Ops! Your internet seems disconnected. Have you already reset the modem?</string>
     <string name="unexpected_error">Something is shaking the Force.\nPlease, be careful.</string>
+    <string name="loading">Loading…</string>
 </resources>

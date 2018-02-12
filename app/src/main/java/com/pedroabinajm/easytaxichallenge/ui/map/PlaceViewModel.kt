@@ -1,24 +1,36 @@
 package com.pedroabinajm.easytaxichallenge.ui.map
 
 import android.arch.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 import com.pedroabinajm.easytaxichallenge.data.model.EasyPlace
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepository
 import com.pedroabinajm.easytaxichallenge.schedulers.ISchedulerProvider
 import com.pedroabinajm.easytaxichallenge.ui.base.BaseViewModel
+import com.pedroabinajm.easytaxichallenge.ui.commons.Resource
+import io.reactivex.Observable
 
 
 class PlaceViewModel(
         private val placeRepository: PlaceRepository,
         schedulerProvider: ISchedulerProvider
 ) : BaseViewModel(schedulerProvider) {
-    val place = MutableLiveData<EasyPlace>()
+    val place = MutableLiveData<Resource<EasyPlace?>>()
 
     fun fetchLastPlace() {
-        place.value = placeRepository.getLastPlace()
+        place.value = Resource.success(placeRepository.getLastPlace())
     }
 
     fun savePlace(place: EasyPlace) {
         placeRepository.saveLastPlace(place)
         fetchLastPlace()
+    }
+
+    fun fetchPlace(latLng: LatLng): Observable<EasyPlace> {
+        place.value = Resource.loading(null)
+        return execute(placeRepository.getPlace(latLng), {
+            place.value = Resource.success(it)
+        }, {
+            place.value = Resource.error(it, null)
+        })
     }
 }

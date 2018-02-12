@@ -1,5 +1,6 @@
 package com.pedroabinajm.easytaxichallenge.ui.commons
 
+import com.pedroabinajm.easytaxichallenge.R
 import com.pedroabinajm.easytaxichallenge.extensions.friendlyMessage
 
 
@@ -8,8 +9,8 @@ open class Resource<out T>(
         val data: T? = null,
         private val error: Throwable? = null
 ) {
-    val message: Int?
-        get() = error?.friendlyMessage
+    val message: Int
+        get() = error.let { error?.friendlyMessage } ?: R.string.unexpected_error
 
     open val isEmpty: Boolean
         get() = data == null || (data is Collection<*> && data.isEmpty())

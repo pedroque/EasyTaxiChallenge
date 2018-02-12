@@ -4,53 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
-            name="place"
-            type="com.pedroabinajm.easytaxichallenge.data.model.EasyPlace" />
+            name="resource"
+            type="com.pedroabinajm.easytaxichallenge.ui.commons.Resource" />
     </data>
 
-    <FrameLayout
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true">
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp"
-            app:cardUseCompatPadding="true">
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="@dimen/default_margin">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/place_name_text"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:padding="@dimen/default_margin">
+                app:placeName="@{resource}"
+                tools:text="Casa" />
 
-                <TextView
-                    android:id="@+id/place_name_text"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{place.name}"
-                    app:showIf="@{place.name != null}"
-                    tools:text="Casa" />
+            <TextView
+                android:id="@+id/place_description_text"
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:placeDescription="@{resource}"
+                tools:text="Rua Luis Gois, 206, Ap. 92" />
 
-                <TextView
-                    android:id="@+id/place_description_text"
-                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@{place.description}"
-                    app:showIf="@{place.description != null}"
-                    tools:text="Rua Luis Gois, 206, Ap. 92" />
-
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </FrameLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </layout>

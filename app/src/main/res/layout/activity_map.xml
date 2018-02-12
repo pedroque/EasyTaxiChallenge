@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
-            name="place"
-            type="com.pedroabinajm.easytaxichallenge.data.model.EasyPlace" />
+            name="resource"
+            type="com.pedroabinajm.easytaxichallenge.ui.commons.Resource" />
     </data>
 
     <android.support.v4.widget.DrawerLayout
@@ -32,7 +31,7 @@
                     android:layout_height="match_parent"
                     app:cameraTargetLat="-23.533773"
                     app:cameraTargetLng="-46.625290"
-                    app:cameraZoom="13"
+                    app:cameraZoom="16"
                     app:uiTiltGestures="false" />
 
                 <com.pedroabinajm.easytaxichallenge.ui.map.PlaceView
@@ -40,20 +39,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/default_margin"
-                    app:place="@{place}" />
+                    app:place="@{resource}" />
 
-                <Space android:id="@+id/center_view"
+                <Space
+                    android:id="@+id/center_view"
                     android:layout_width="1dp"
                     android:layout_height="1dp"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true" />
 
-                <ImageView android:id="@+id/marker_image"
+                <ImageView
+                    android:id="@+id/marker_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/center_view"
-                    android:layout_marginBottom="-18dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/ic_cluster_marker"/>
+                    android:layout_marginBottom="-18dp"
+                    android:src="@drawable/ic_cluster_marker" />
 
 
                 <View

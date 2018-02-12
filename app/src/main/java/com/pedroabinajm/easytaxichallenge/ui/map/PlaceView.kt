@@ -5,10 +5,13 @@ import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.pedroabinajm.easytaxichallenge.R
 import com.pedroabinajm.easytaxichallenge.data.model.EasyPlace
 import com.pedroabinajm.easytaxichallenge.databinding.ViewPlaceBinding
+import com.pedroabinajm.easytaxichallenge.ui.commons.Resource
 
 
 class PlaceView : FrameLayout {
@@ -29,9 +32,9 @@ class PlaceView : FrameLayout {
     }
     // endregion
 
-    var place: EasyPlace? = null
+    var resource: Resource<EasyPlace?>? = null
         set(value) {
-            dataBinding?.place = value
+            dataBinding?.resource = value
             field = value
         }
 
@@ -39,8 +42,38 @@ class PlaceView : FrameLayout {
     companion object {
         @JvmStatic
         @BindingAdapter("place")
-        fun setPlace(placeView: PlaceView, easyPlace: EasyPlace?) {
-            placeView.place = easyPlace
+        fun setPlace(placeView: PlaceView, resource: Resource<EasyPlace?>?) {
+            placeView.resource = resource
+        }
+
+        @JvmStatic
+        @BindingAdapter("placeName")
+        fun setPlaceName(textView: TextView, resource: Resource<EasyPlace?>?) {
+            if( resource != null ) {
+                when (resource.status) {
+                    Resource.Status.SUCCESS -> textView.text = resource.data?.name
+                    Resource.Status.LOADING -> textView.setText(R.string.loading)
+                    Resource.Status.ERROR -> textView.setText(resource.message)
+                }
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("placeDescription")
+        fun setPlaceDescription(textView: TextView, resource: Resource<EasyPlace?>?) {
+            if( resource != null ) {
+                when (resource.status) {
+                    Resource.Status.SUCCESS -> {
+                        textView.visibility = View.GONE
+                        resource.data?.description?.let {
+                            textView.text = it
+                            textView.visibility = View.VISIBLE
+                        }
+                    }
+                    Resource.Status.LOADING -> textView.visibility = View.GONE
+                    Resource.Status.ERROR -> textView.visibility = View.GONE
+                }
+            }
         }
     }
 }

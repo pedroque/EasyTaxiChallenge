@@ -8,7 +8,11 @@ import javax.inject.Inject
 class PlaceDaoImpl @Inject constructor() : BaseDao<EasyPlace>(EasyPlace::class.java), PlaceDao {
     override fun delete(id: String) {
         Realm.getDefaultInstance().use { realm ->
-            findFromRealm(realm, id)?.deleteFromRealm()
+            findFromRealm(realm, id)?.let { result ->
+                realm.executeTransaction {
+                    result.deleteFromRealm()
+                }
+            }
         }
     }
 
