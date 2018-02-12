@@ -21,7 +21,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode computeVersionCode()
         versionName computeVersionName()
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.pedroabinajm.easytaxichallenge.app.MockJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -40,6 +40,10 @@ android {
 
     dataBinding {
         enabled = true
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 

@@ -12,6 +12,7 @@ import android.databinding.DataBindingUtil
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.support.annotation.VisibleForTesting
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.common.api.ResolvableApiException
@@ -88,12 +89,18 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setUpMapFragment() {
-        val mapFragment = fragmentManager
-                .findFragmentById(R.id.map) as MapFragment
+        val mapFragment = getMapFragment()
         mapFragment.getMapAsync { map ->
             setUpMap(map)
             setUpObservers()
         }
+    }
+
+
+    @VisibleForTesting
+    fun getMapFragment(): MapFragment {
+        return fragmentManager
+                .findFragmentById(R.id.map) as MapFragment
     }
 
     private fun setUpMap(map: GoogleMap) {
