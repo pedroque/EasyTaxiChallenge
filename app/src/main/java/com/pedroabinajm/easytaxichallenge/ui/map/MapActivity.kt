@@ -18,6 +18,8 @@ import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.pedroabinajm.easytaxichallenge.R
 import com.pedroabinajm.easytaxichallenge.data.model.EasyPlace
+import com.pedroabinajm.easytaxichallenge.databinding.ActivityMapBinding
+import com.pedroabinajm.easytaxichallenge.extensions.addStatusBarMargin
 import com.pedroabinajm.easytaxichallenge.extensions.doOnCheckPermissions
 import com.pedroabinajm.easytaxichallenge.ui.base.BaseActivity
 import com.pedroabinajm.easytaxichallenge.utils.Constants
@@ -26,10 +28,10 @@ import javax.inject.Inject
 
 class MapActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
 
-    var map: GoogleMap? = null
-    var googleApiClient: GoogleApiClient? = null
-    lateinit var placeViewModel: PlaceViewModel
-    private lateinit var dataBinding: MapActivityClassBinding
+    private var map: GoogleMap? = null
+    private var googleApiClient: GoogleApiClient? = null
+    private lateinit var placeViewModel: PlaceViewModel
+    private lateinit var dataBinding: ActivityMapBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -44,9 +46,18 @@ class MapActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
         }
         dataBinding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_map, null, false)
         setContentView(dataBinding.root)
+        init()
+        setUpView()
+    }
+
+    private fun init() {
         placeViewModel = ViewModelProviders.of(this, viewModelFactory).get(PlaceViewModel::class.java)
         setUpGoogleApiClient()
+    }
+
+    private fun setUpView() {
         setUpMapFragment()
+        dataBinding.placeView.addStatusBarMargin()
     }
 
     @SuppressLint("MissingPermission")

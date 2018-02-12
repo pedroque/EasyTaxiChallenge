@@ -32,7 +32,7 @@ open class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideMiraApp() = application as BaseApp
+    internal fun provideBaseApp() = application as BaseApp
 
     @Provides
     @Singleton
@@ -44,7 +44,7 @@ open class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideSharedPreferences() = application.getSharedPreferences("mira", Context.MODE_PRIVATE)
+    internal fun provideSharedPreferences() = application.getSharedPreferences("code_challenge", Context.MODE_PRIVATE)
 
     @Provides
     @Singleton

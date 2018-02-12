@@ -10,7 +10,7 @@ buildscript {
     ext.dagger_version = '2.11-rc2'
     ext.lifecycle_extensions_version = '1.1.0'
     ext.kotlin_data_binding_version = '3.1.0-alpha04'
-    ext.realm_version = '4.2.0'
+    ext.realm_version = '4.3.4'
     ext.rx_android_version = '2.0.1'
     ext.retrofit_gson_converter_version = '2.2.0'
     ext.ok_http_version = '3.7.0'

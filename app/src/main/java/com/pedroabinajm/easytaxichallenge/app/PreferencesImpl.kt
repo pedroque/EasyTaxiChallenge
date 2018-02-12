@@ -13,6 +13,6 @@ constructor(private val prefs: SharedPreferences) : Preferences {
 
     override var lastPlaceId: String?
         get() = prefs.getString(LAST_PLACE_ID, null)
-        set(value) = prefs.edit().putString(LAST_PLACE_ID, lastPlaceId).apply()
+        set(value) = prefs.edit().putString(LAST_PLACE_ID, value).apply()
 
 }

@@ -1,6 +1,8 @@
 package com.pedroabinajm.easytaxichallenge.extensions
 
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import com.pedroabinajm.easytaxichallenge.ui.commons.ViewHelper
 
 fun View.show() {
@@ -16,4 +18,10 @@ fun View.addPaddingTop(extraPaddingTop: Int) {
             paddingTop + extraPaddingTop,
             paddingRight,
             paddingBottom)
+}
+
+fun View.addStatusBarMargin() {
+    val mlp = (layoutParams as ViewGroup.MarginLayoutParams)
+    mlp.topMargin = mlp.topMargin + ViewHelper.getStatusBarHeight(context)
+    layoutParams = mlp
 }

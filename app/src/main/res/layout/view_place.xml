@@ -10,28 +10,47 @@
             type="com.pedroabinajm.easytaxichallenge.data.model.EasyPlace" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:padding="@dimen/default_margin">
+        android:background="?attr/selectableItemBackground">
 
-        <TextView
-            android:id="@+id/place_name_text"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{place.name}"
-            app:showIf="@{place.name != null}"
-            tools:text="Casa" />
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true">
 
-        <TextView
-            android:id="@+id/place_description_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{place.description}"
-            app:showIf="@{place.description != null}"
-            tools:text="Rua Luis Gois, 206, Ap. 92" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="@dimen/default_margin">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/place_name_text"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{place.name}"
+                    app:showIf="@{place.name != null}"
+                    tools:text="Casa" />
+
+                <TextView
+                    android:id="@+id/place_description_text"
+                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{place.description}"
+                    app:showIf="@{place.description != null}"
+                    tools:text="Rua Luis Gois, 206, Ap. 92" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
 </layout>

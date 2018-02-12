@@ -2,9 +2,10 @@ package com.pedroabinajm.easytaxichallenge.data.dao
 
 import com.pedroabinajm.easytaxichallenge.data.model.EasyPlace
 import io.realm.Realm
+import javax.inject.Inject
 
 
-class PlaceDaoImpl : BaseDao<EasyPlace>(EasyPlace::class.java), PlaceDao {
+class PlaceDaoImpl @Inject constructor() : BaseDao<EasyPlace>(EasyPlace::class.java), PlaceDao {
     override fun delete(id: String) {
         Realm.getDefaultInstance().use { realm ->
             findFromRealm(realm, id)?.deleteFromRealm()

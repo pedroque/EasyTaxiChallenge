@@ -25,12 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.pedroabinajm.easytaxichallenge.ui.map.PlaceView
-                    android:id="@+id/place_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:place="@{place}"/>
-
                 <fragment
                     android:id="@+id/map"
                     android:name="com.google.android.gms.maps.MapFragment"
@@ -40,6 +34,32 @@
                     app:cameraTargetLng="-46.625290"
                     app:cameraZoom="13"
                     app:uiTiltGestures="false" />
+
+                <com.pedroabinajm.easytaxichallenge.ui.map.PlaceView
+                    android:id="@+id/place_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_margin"
+                    app:place="@{place}" />
+
+                <Space android:id="@+id/center_view"
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_centerInParent="true"/>
+
+                <ImageView android:id="@+id/marker_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/center_view"
+                    android:layout_marginBottom="-18dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_cluster_marker"/>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:background="@drawable/white_gradient" />
 
             </RelativeLayout>
         </android.support.design.internal.ScrimInsetsFrameLayout>

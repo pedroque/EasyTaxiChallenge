@@ -8,7 +8,7 @@ import com.pedroabinajm.easytaxichallenge.extensions.show
 
 object BindingAdapter {
     @JvmStatic
-    @BindingAdapter("app:showIf")
+    @BindingAdapter("showIf")
     fun showIf(view: View, show: Boolean) {
         if (show) view.show() else view.hide()
     }
