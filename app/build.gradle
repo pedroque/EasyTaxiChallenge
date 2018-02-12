@@ -98,8 +98,6 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     testImplementation "android.arch.core:core-testing:$lifecycle_extensions_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
-    testImplementation "org.powermock:powermock-module-junit4:$power_mockito"
-    testImplementation "org.powermock:powermock-api-mockito2:$power_mockito"
 
     // Android test dependencies
     androidTestImplementation "com.android.support.test:runner:$testrunner_version"
