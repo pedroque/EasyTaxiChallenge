@@ -2,8 +2,11 @@ package com.pedroabinajm.easytaxichallenge.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.graphics.Point
@@ -11,9 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.places.Places
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapFragment
@@ -29,18 +30,16 @@ import com.pedroabinajm.easytaxichallenge.utils.Constants
 import javax.inject.Inject
 
 
-class MapActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
+class MapActivity : BaseActivity() {
 
     private var map: GoogleMap? = null
-    private var googleApiClient: GoogleApiClient? = null
     private lateinit var placeViewModel: PlaceViewModel
     private lateinit var dataBinding: ActivityMapBinding
     private var reason: Int = 0
+    private var lastPlace = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    @Inject
-    lateinit var placeDetection: PlaceDetection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +53,27 @@ class MapActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
         setUpView()
     }
 
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            Constants.Permissions.LOCATION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    placeViewModel.fetchCurrentPlace(lastPlace)
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.ReqCode.REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
+            placeViewModel.fetchCurrentPlace(lastPlace)
+        }
+    }
+
     private fun init() {
         placeViewModel = ViewModelProviders.of(this, viewModelFactory).get(PlaceViewModel::class.java)
-        setUpGoogleApiClient()
     }
 
     private fun setUpView() {
@@ -65,74 +82,64 @@ class MapActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
         dataBinding.placeView.setOnClickListener {
             Toast.makeText(this, "navigate to bookmarks", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            Constants.Permissions.LOCATION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    googleApiClient?.let {
-                        placeDetection.getCurrentPlace(it, {
-                            placeViewModel.savePlace(it)
-                        })
-                    }
-                }
-            }
+        dataBinding.myLocationButton.setOnClickListener {
+            getCurrentPlace(false)
         }
-    }
-
-    private fun setUpGoogleApiClient() {
-        googleApiClient = GoogleApiClient.Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, this)
-                .build()
-    }
-
-    override fun onConnectionFailed(p0: ConnectionResult) {
-
     }
 
     private fun setUpMapFragment() {
         val mapFragment = fragmentManager
                 .findFragmentById(R.id.map) as MapFragment
         mapFragment.getMapAsync { map ->
-            this.map = map
-            this.map?.uiSettings?.isMapToolbarEnabled = false
-            this.map?.uiSettings?.isMyLocationButtonEnabled = false
-            this.map?.setOnCameraMoveStartedListener { r ->
-                reason = r
-            }
-            this.map?.setOnCameraIdleListener {
-                if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                    map?.let {
-                        val target = it.projection.fromScreenLocation(Point(
-                                dataBinding.centerView.x.toInt(),
-                                dataBinding.centerView.y.toInt()
-                        ))
-                        placeViewModel.fetchPlace(target)
-                    }
-                }
-            }
+            setUpMap(map)
             setUpObservers()
         }
+    }
+
+    private fun setUpMap(map: GoogleMap) {
+        this.map = map
+        this.map?.uiSettings?.isMapToolbarEnabled = false
+        this.map?.uiSettings?.isMyLocationButtonEnabled = false
+        this.map?.setOnCameraMoveStartedListener { r ->
+            reason = r
+        }
+        this.map?.setOnCameraIdleListener {
+            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                placeViewModel.fetchPlace(getMapLatLng(map))
+            }
+        }
+    }
+
+    private fun getMapLatLng(it: GoogleMap): LatLng {
+        return it.projection.fromScreenLocation(Point(
+                dataBinding.centerView.x.toInt(),
+                dataBinding.centerView.y.toInt()
+        ))
     }
 
     private fun setUpObservers() {
         placeViewModel.place.observe(this, Observer<Resource<EasyPlace?>> {
             dataBinding.resource = it
             if (it?.status == Resource.Status.SUCCESS) {
-                if (it.data == null) {
-                    getCurrentPlace()
-                } else {
-                    setMapLocation(it.data)
+                setMapLocation(it.data!!)
+            } else if (it?.status == Resource.Status.ERROR) {
+                it.error?.let {
+                    if (it is ResolvableApiException) {
+                        resolve(it)
+                    }
                 }
             }
         })
         if (placeViewModel.place.value == null) {
-            placeViewModel.fetchLastPlace()
+            getCurrentPlace(true)
+        }
+    }
+
+    private fun resolve(e: ResolvableApiException) {
+        try {
+            e.startResolutionForResult(this,
+                    Constants.ReqCode.REQUEST_CHECK_SETTINGS)
+        } catch (ignore: IntentSender.SendIntentException) {
         }
     }
 
@@ -141,13 +148,11 @@ class MapActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
     }
 
     @SuppressLint("MissingPermission")
-    private fun getCurrentPlace() {
-        googleApiClient?.let {
-            doOnCheckPermissions({
-                placeDetection.getCurrentPlace(it, {
-                    placeViewModel.savePlace(it)
-                })
-            }, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-        }
+    private fun getCurrentPlace(lastPlace: Boolean) {
+        this.lastPlace = lastPlace
+        doOnCheckPermissions({
+            placeViewModel.fetchCurrentPlace(lastPlace)
+        }, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+
     }
 }

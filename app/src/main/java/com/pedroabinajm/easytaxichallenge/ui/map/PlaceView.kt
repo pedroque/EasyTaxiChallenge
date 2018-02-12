@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.pedroabinajm.easytaxichallenge.R
 import com.pedroabinajm.easytaxichallenge.data.model.EasyPlace
 import com.pedroabinajm.easytaxichallenge.databinding.ViewPlaceBinding
+import com.pedroabinajm.easytaxichallenge.extensions.friendlyMessage
 import com.pedroabinajm.easytaxichallenge.ui.commons.Resource
 
 
@@ -49,11 +50,11 @@ class PlaceView : FrameLayout {
         @JvmStatic
         @BindingAdapter("placeName")
         fun setPlaceName(textView: TextView, resource: Resource<EasyPlace?>?) {
-            if( resource != null ) {
+            if (resource != null) {
                 when (resource.status) {
                     Resource.Status.SUCCESS -> textView.text = resource.data?.name
                     Resource.Status.LOADING -> textView.setText(R.string.loading)
-                    Resource.Status.ERROR -> textView.setText(resource.message)
+                    Resource.Status.ERROR -> textView.setText(resource.error?.friendlyMessage ?: R.string.unexpected_error)
                 }
             }
         }
@@ -61,7 +62,7 @@ class PlaceView : FrameLayout {
         @JvmStatic
         @BindingAdapter("placeDescription")
         fun setPlaceDescription(textView: TextView, resource: Resource<EasyPlace?>?) {
-            if( resource != null ) {
+            if (resource != null) {
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
                         textView.visibility = View.GONE

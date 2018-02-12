@@ -3,4 +3,7 @@
     <string name="network_error">Ops! Your internet seems disconnected. Have you already reset the modem?</string>
     <string name="unexpected_error">Something is shaking the Force.\nPlease, be careful.</string>
     <string name="loading">Loading…</string>
+    <string name="search_address">Search adddress</string>
+    <string name="current_location">Current location</string>
+    <string name="center_map">Center map on current location</string>
 </resources>

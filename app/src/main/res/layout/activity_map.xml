@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="resource"
             type="com.pedroabinajm.easytaxichallenge.ui.commons.Resource" />
@@ -54,8 +55,19 @@
                     android:layout_alignBottom="@id/center_view"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="-18dp"
+                    android:contentDescription="@string/current_location"
                     android:src="@drawable/ic_cluster_marker" />
 
+                <ImageButton
+                    android:id="@+id/my_location_button"
+                    style="@style/Fab"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:contentDescription="@string/center_map"
+                    android:src="@drawable/ic_centermap" />
 
                 <View
                     android:layout_width="match_parent"

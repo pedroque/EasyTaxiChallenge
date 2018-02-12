@@ -2,7 +2,8 @@ package com.pedroabinajm.easytaxichallenge.di.module
 
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDao
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDaoImpl
-import com.pedroabinajm.easytaxichallenge.data.entity.mapper.PlaceMapper
+import com.pedroabinajm.easytaxichallenge.data.location.FusedLocator
+import com.pedroabinajm.easytaxichallenge.data.location.Locator
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepository
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepositoryImpl
 import com.pedroabinajm.easytaxichallenge.data.repository.datasource.AddressDataSource
@@ -11,7 +12,6 @@ import com.pedroabinajm.easytaxichallenge.data.repository.datasource.CloudAddres
 import com.pedroabinajm.easytaxichallenge.data.repository.datasource.PlaceDataSource
 import com.pedroabinajm.easytaxichallenge.di.ActivityScope
 import com.pedroabinajm.easytaxichallenge.schedulers.ISchedulerProvider
-import com.pedroabinajm.easytaxichallenge.ui.map.PlaceDetection
 import com.pedroabinajm.easytaxichallenge.ui.map.ViewModelFactory
 import dagger.Module
 import dagger.Provides
@@ -27,6 +27,10 @@ class PlaceModule {
     @Provides
     @Reusable
     internal fun provideCachePlaceDataSource(placeDataSource: CachePlaceDataSource): PlaceDataSource = placeDataSource
+
+    @Provides
+    @Reusable
+    internal fun provideLocator(locator: FusedLocator): Locator = locator
 
     @Provides
     @Reusable

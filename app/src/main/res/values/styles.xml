@@ -10,4 +10,13 @@
 
     <style name="AppTheme.Transparent" />
 
+    <style name="Fab">
+        <item name="android:layout_marginBottom">@dimen/default_margin</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin</item>
+        <item name="android:layout_marginRight">@dimen/default_margin</item>
+        <item name="android:background">@drawable/fab_bg</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
 </resources>

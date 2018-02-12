@@ -6,7 +6,7 @@ import io.reactivex.Observable
 
 
 interface PlaceRepository {
-    fun getLastPlace(): EasyPlace?
+    fun getCurrentPlace(lastPlace: Boolean): Observable<EasyPlace>
     fun saveLastPlace(easyPlace: EasyPlace)
     fun getPlace(latLng: LatLng): Observable<EasyPlace>
 }

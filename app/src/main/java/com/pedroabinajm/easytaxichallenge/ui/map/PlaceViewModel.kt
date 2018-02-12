@@ -16,13 +16,13 @@ class PlaceViewModel(
 ) : BaseViewModel(schedulerProvider) {
     val place = MutableLiveData<Resource<EasyPlace?>>()
 
-    fun fetchLastPlace() {
-        place.value = Resource.success(placeRepository.getLastPlace())
-    }
-
-    fun savePlace(place: EasyPlace) {
-        placeRepository.saveLastPlace(place)
-        fetchLastPlace()
+    fun fetchCurrentPlace(lastPlace: Boolean): Observable<EasyPlace> {
+        place.postValue(Resource.loading(null))
+        return execute(placeRepository.getCurrentPlace(lastPlace), {
+            place.postValue(Resource.success(it))
+        }, {
+            place.postValue(Resource.error(it, null))
+        })
     }
 
     fun fetchPlace(latLng: LatLng): Observable<EasyPlace> {
