@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import java.io.IOException
 
@@ -99,6 +100,15 @@ class PlaceViewModelTest {
                 .awaitTerminalEvent()
         Mockito.verify(placeObserver).onChanged(Resource.loading(null))
         Mockito.verify(placeObserver).onChanged(Resource.error(error, null))
+    }
+
+    @Test
+    fun setPlace(){
+        placeViewModel.place.observeForever(placeObserver)
+        val place = EasyPlace()
+        placeViewModel.setPlace(place)
+        verify(placeRepository).saveLastPlace(place)
+        Mockito.verify(placeObserver).onChanged(Resource.success(place))
     }
 
 }
