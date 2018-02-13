@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.VisibleForTesting
 import android.view.View
-import android.widget.Toast
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,6 +26,7 @@ import com.pedroabinajm.easytaxichallenge.extensions.addStatusBarMargin
 import com.pedroabinajm.easytaxichallenge.extensions.doOnCheckPermissions
 import com.pedroabinajm.easytaxichallenge.ui.base.BaseActivity
 import com.pedroabinajm.easytaxichallenge.ui.commons.Resource
+import com.pedroabinajm.easytaxichallenge.ui.search.SearchPlaceActivity
 import com.pedroabinajm.easytaxichallenge.utils.Constants
 import javax.inject.Inject
 
@@ -70,6 +70,11 @@ class MapActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.ReqCode.REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
             placeViewModel.fetchCurrentPlace(lastPlace)
+        } else if (requestCode == Constants.ReqCode.SEARCH_PLACE && resultCode == Activity.RESULT_OK) {
+            val place = data?.getParcelableExtra<EasyPlace>(Constants.Arguments.PLACE)
+            place?.let {
+                placeViewModel.fetchPlace(LatLng(place.latitude, place.longitude))
+            }
         }
     }
 
@@ -81,11 +86,15 @@ class MapActivity : BaseActivity() {
         setUpMapFragment()
         dataBinding.placeView.addStatusBarMargin()
         dataBinding.placeView.setOnClickListener {
-            Toast.makeText(this, "navigate to bookmarks", Toast.LENGTH_SHORT).show()
+            navigateToSearch()
         }
         dataBinding.myLocationButton.setOnClickListener {
             getCurrentPlace(false)
         }
+    }
+
+    private fun navigateToSearch() {
+        startActivityForResult(SearchPlaceActivity.getIntent(this), Constants.ReqCode.SEARCH_PLACE)
     }
 
     private fun setUpMapFragment() {

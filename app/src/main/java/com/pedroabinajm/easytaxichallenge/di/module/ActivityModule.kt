@@ -18,6 +18,7 @@ package com.pedroabinajm.easytaxichallenge.di.module
 
 import com.pedroabinajm.easytaxichallenge.di.ActivityScope
 import com.pedroabinajm.easytaxichallenge.ui.map.MapActivity
+import com.pedroabinajm.easytaxichallenge.ui.search.SearchPlaceActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -27,5 +28,9 @@ abstract class ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [PlaceModule::class])
     internal abstract fun contributeMapActivity(): MapActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [PlaceModule::class])
+    internal abstract fun contributeSearchPlaceActivity(): SearchPlaceActivity
 
 }

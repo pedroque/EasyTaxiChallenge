@@ -16,6 +16,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCdSOUL3GiVDW_XXn3YAofcfHj-Wni4ejc" />
+
         <activity
             android:name=".ui.map.MapActivity"
             android:theme="@style/AppTheme.Transparent">
@@ -24,5 +25,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.search.SearchPlaceActivity" />
     </application>
 </manifest>

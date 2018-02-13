@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.pedroabinajm.easytaxichallenge.ui.commons.Resource.Status" />
+
+        <variable
+            name="resource"
+            type="com.pedroabinajm.easytaxichallenge.ui.commons.Resource" />
+
+        <variable
+            name="query"
+            type="com.pedroabinajm.easytaxichallenge.ui.search.QueryViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ToolbarTheme"
+            app:title="">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/search_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/search_place_title"
+                android:text="@={query.query}" />
+
+        </android.support.v7.widget.Toolbar>
+
+        <RelativeLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/places_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0"
+                android:visibility="gone"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:showIf="@{!resource.isEmpty &amp;&amp; resource.status != Status.LOADING}" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:alpha="0"
+                android:visibility="gone"
+                app:showIf="@{resource.status == Status.LOADING &amp;&amp; resource.isEmpty}" />
+
+
+            <TextView
+                android:id="@+id/error_text"
+                style="@style/TextAppearance.AppCompat.Display1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_margin="56dp"
+                android:gravity="center"
+                android:text="@string/search_address_content"
+                app:resourceText="@{resource}"
+                app:showIf="@{resource == null || ((resource.isEmpty || resource.status == Status.ERROR) &amp;&amp; resource.status != Status.LOADING)}" />
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

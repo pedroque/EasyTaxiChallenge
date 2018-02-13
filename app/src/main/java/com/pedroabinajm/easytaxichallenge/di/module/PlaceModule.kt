@@ -6,6 +6,8 @@ import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapper
 import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapperImpl
 import com.pedroabinajm.easytaxichallenge.data.location.FusedLocator
 import com.pedroabinajm.easytaxichallenge.data.location.Locator
+import com.pedroabinajm.easytaxichallenge.data.location.PlaceAutocompleteProvider
+import com.pedroabinajm.easytaxichallenge.data.location.PlaceAutocompleteProviderImpl
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepository
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepositoryImpl
 import com.pedroabinajm.easytaxichallenge.data.repository.datasource.AddressDataSource
@@ -47,7 +49,14 @@ class PlaceModule {
     internal fun providePlaceRepository(placeRepository: PlaceRepositoryImpl): PlaceRepository = placeRepository
 
     @Provides
+    @Reusable
+    internal fun providePlaceAutocompleteProvider(placeAutocompleteProvider: PlaceAutocompleteProviderImpl):
+            PlaceAutocompleteProvider = placeAutocompleteProvider
+
+    @Provides
     @ActivityScope
-    internal fun provideViewModelFactory(placeRepository: PlaceRepository, schedulerProvider: ISchedulerProvider) =
-            ViewModelFactory(placeRepository, schedulerProvider)
+    internal fun provideViewModelFactory(placeRepository: PlaceRepository,
+                                         placeAutocompleteProvider: PlaceAutocompleteProvider,
+                                         schedulerProvider: ISchedulerProvider) =
+            ViewModelFactory(placeRepository, placeAutocompleteProvider, 500, schedulerProvider)
 }
