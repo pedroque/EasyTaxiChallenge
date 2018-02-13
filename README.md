@@ -14,15 +14,13 @@ Save or delete favorite locations if you want.
 ## Used libraries
 
 - [Rx](https://github.com/ReactiveX/RxJava)
-  - Architecture requirement for reactive apps with MVVM
 - [Retrofit2](http://square.github.io/retrofit/)
-  - Easier RESTful APIs implementations
 - [Dagger2](https://google.github.io/dagger/)
-  - The most loved dependency injection for Android
 - [Android Arch Lifecycle](https://developer.android.com/topic/libraries/architecture/index.html)
-  - Helper for View Model architecture
-- [Mockito](http://site.mockito.org/), [PowerMock](https://github.com/powermock/powermock), [JUnit](http://junit.org/junit4/)
-  - Mock and unit testing
+- [Mockito](http://site.mockito.org/)
+- [JUnit](http://junit.org/junit4/)
+- [Espresso](https://developer.android.com/training/testing/ui-testing/espresso-testing.html)
+
 
 ### Observations
 
