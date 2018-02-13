@@ -11,10 +11,12 @@ import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
 import android.support.test.runner.AndroidJUnit4
+import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.pedroabinajm.easytaxichallenge.R
 import com.pedroabinajm.easytaxichallenge.utils.DrawableMatcher
+import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
@@ -66,7 +68,7 @@ class MapActivityTest {
         val placeDescriptionText = onView(allOf(withId(R.id.place_description_text), isDisplayed()))
         placeDescriptionText.check(matches(withText("Vila Mariana, Sao Paulo")))
 
-        onView(allOf(withId(R.id.search_icon), isDisplayed()))
+        onView(allOf(withId(R.id.favorite_icon), isDisplayed()))
                 .check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.my_location_button), isDisplayed()))
@@ -113,13 +115,16 @@ class MapActivityTest {
                 .perform(click())
 
         onView(withId(R.id.favorite_button))
-                .check(matches(DrawableMatcher(R.drawable.ic_favorite_on)))
+                .check(matches(withDrawable(R.drawable.ic_favorite_on)))
 
         onView(withId(R.id.favorite_button))
                 .perform(click())
 
         onView(withId(R.id.favorite_button))
-                .check(matches(DrawableMatcher(R.drawable.ic_favorite_off)))
+                .check(matches(withDrawable(R.drawable.ic_favorite_off)))
+    }
 
+    private fun withDrawable(resourceId: Int): Matcher<View> {
+        return DrawableMatcher(resourceId)
     }
 }

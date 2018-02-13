@@ -27,7 +27,7 @@
 
 
             <ImageView
-                android:id="@+id/search_icon"
+                android:id="@+id/favorite_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
@@ -44,8 +44,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:layout_marginRight="@dimen/default_margin"
-                android:layout_toLeftOf="@id/search_icon"
-                android:layout_toStartOf="@id/search_icon"
+                android:layout_toLeftOf="@id/favorite_icon"
+                android:layout_toStartOf="@id/favorite_icon"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 

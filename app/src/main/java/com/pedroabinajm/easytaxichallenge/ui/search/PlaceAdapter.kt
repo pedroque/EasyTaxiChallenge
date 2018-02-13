@@ -24,7 +24,7 @@ class PlaceAdapter : BaseAdapter<EasyPlace>() {
     inner class PlaceViewHolder(binding: ItemPlaceBinding) : ViewHolder(binding) {
 
         init {
-            binding.searchIcon.setOnClickListener {
+            binding.favoriteIcon.setOnClickListener {
                 if (adapterPosition != -1) bookmarkSubject.onNext(adapterPosition)
             }
         }
