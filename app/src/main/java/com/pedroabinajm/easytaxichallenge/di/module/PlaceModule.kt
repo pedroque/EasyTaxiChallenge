@@ -1,25 +1,30 @@
 package com.pedroabinajm.easytaxichallenge.di.module
 
+import com.pedroabinajm.easytaxichallenge.data.cache.BookmarkCache
+import com.pedroabinajm.easytaxichallenge.data.cache.BookmarkCacheImpl
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDao
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDaoImpl
 import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapper
 import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapperImpl
+import com.pedroabinajm.easytaxichallenge.data.entity.mapper.BookmarkMapper
+import com.pedroabinajm.easytaxichallenge.data.entity.mapper.BookmarkMapperImpl
 import com.pedroabinajm.easytaxichallenge.data.location.FusedLocator
 import com.pedroabinajm.easytaxichallenge.data.location.Locator
 import com.pedroabinajm.easytaxichallenge.data.location.PlaceAutocompleteProvider
 import com.pedroabinajm.easytaxichallenge.data.location.PlaceAutocompleteProviderImpl
+import com.pedroabinajm.easytaxichallenge.data.repository.BookmarkRepository
+import com.pedroabinajm.easytaxichallenge.data.repository.BookmarkRepositoryImpl
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepository
 import com.pedroabinajm.easytaxichallenge.data.repository.PlaceRepositoryImpl
-import com.pedroabinajm.easytaxichallenge.data.repository.datasource.AddressDataSource
-import com.pedroabinajm.easytaxichallenge.data.repository.datasource.CachePlaceDataSource
-import com.pedroabinajm.easytaxichallenge.data.repository.datasource.CloudAddressDataSource
-import com.pedroabinajm.easytaxichallenge.data.repository.datasource.PlaceDataSource
+import com.pedroabinajm.easytaxichallenge.data.repository.datasource.*
 import com.pedroabinajm.easytaxichallenge.di.ActivityScope
 import com.pedroabinajm.easytaxichallenge.schedulers.ISchedulerProvider
 import com.pedroabinajm.easytaxichallenge.ui.map.ViewModelFactory
+import com.pedroabinajm.easytaxichallenge.ui.search.BookmarkViewModelFactory
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import javax.inject.Named
 
 
 @Module
@@ -27,6 +32,32 @@ class PlaceModule {
     @Provides
     @Reusable
     internal fun providePlaceDao(placeDao: PlaceDaoImpl): PlaceDao = placeDao
+
+    @Provides
+    @Reusable
+    internal fun provideBookmarkCache(bookmarkCache: BookmarkCacheImpl): BookmarkCache = bookmarkCache
+
+    @Provides
+    @Reusable
+    @Named("cloud")
+    internal fun provideCloudBookmarkDataSource(cloudBookmarksDataSource: CloudBookmarksDataSource):
+            BookmarkDataSource = cloudBookmarksDataSource
+
+    @Provides
+    @Reusable
+    @Named("cache")
+    internal fun provideCacheBookmarkDataSource(cacheBookmarkDataSource: CacheBookmarkDataSource):
+            BookmarkDataSource = cacheBookmarkDataSource
+
+    @Provides
+    @Reusable
+    internal fun provideBookmarkMapper(bookmarkMapper: BookmarkMapperImpl):
+            BookmarkMapper = bookmarkMapper
+
+    @Provides
+    @Reusable
+    internal fun provideBookmarkRepository(bookmarkRepository: BookmarkRepositoryImpl):
+            BookmarkRepository = bookmarkRepository
 
     @Provides
     @Reusable
@@ -59,4 +90,10 @@ class PlaceModule {
                                          placeAutocompleteProvider: PlaceAutocompleteProvider,
                                          schedulerProvider: ISchedulerProvider) =
             ViewModelFactory(placeRepository, placeAutocompleteProvider, 500, schedulerProvider)
+
+    @Provides
+    @ActivityScope
+    internal fun provideBookmarkViewModelFactory(bookmarkRepository: BookmarkRepository,
+                                                 schedulerProvider: ISchedulerProvider) =
+            BookmarkViewModelFactory(bookmarkRepository, schedulerProvider)
 }

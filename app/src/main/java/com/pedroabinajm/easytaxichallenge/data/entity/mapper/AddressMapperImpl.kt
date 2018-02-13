@@ -8,12 +8,24 @@ import javax.inject.Inject
 
 class AddressMapperImpl @Inject constructor() : AddressMapper {
     override fun transform(address: Address): EasyPlace {
+        val name = address.premises?.let { it } ?:
+                address.thoroughfare?.let {
+                    address.subThoroughfare?.let {
+                        listOf(address.thoroughfare, address.subThoroughfare).joinToString(separator = ", ")
+                    } ?: it
+                } ?:
+                "Unknown"
+        val description = address.subLocality?.let {
+            address.subAdminArea?.let {
+                listOf(address.subLocality, address.subAdminArea).joinToString(separator = ", ")
+            } ?: it
+        }
         return EasyPlace(
                 UUID.randomUUID().toString(),
-                address.premises?.let { it } ?: listOf(address.thoroughfare, address.subThoroughfare).joinToString(separator = ", "),
+                name,
                 address.latitude,
                 address.longitude,
-                listOf(address.subLocality, address.subAdminArea).joinToString(separator = ", "),
+                description,
                 false
         )
     }

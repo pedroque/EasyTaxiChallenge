@@ -26,9 +26,12 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var bookmarkViewModelFactory: BookmarkViewModelFactory
 
     private lateinit var dataBinding: ActivitySearchPlaceBinding
     private lateinit var searchPlaceViewModel: SearchPlaceViewModel
+    private lateinit var bookmarkViewModel: BookmarkViewModel
     private lateinit var queryViewModel: AutoClearedValue<QueryViewModel>
     private var adapter: PlaceAdapter? = null
 
@@ -47,6 +50,7 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
 
     private fun init() {
         searchPlaceViewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchPlaceViewModel::class.java)
+        bookmarkViewModel = ViewModelProviders.of(this, bookmarkViewModelFactory).get(BookmarkViewModel::class.java)
         queryViewModel = AutoClearedValue(this, QueryViewModel(searchPlaceViewModel.query))
         dataBinding.query = queryViewModel.value
         searchPlaceViewModel.placeAutocompleteProvider.googleApiClient = GoogleApiClient.Builder(this)
@@ -57,12 +61,21 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
     }
 
     private fun bind() {
+        bookmarkViewModel.bookmarks.observe(this, Observer<Resource<List<EasyPlace>>> {
+            dataBinding.resource = it
+            if (it?.status == Resource.Status.SUCCESS) {
+                when {
+                    it.data == null || it.isEmpty -> setEmptyQuery()
+                    else -> setPlaces(it.data)
+                }
+            }
+        })
         searchPlaceViewModel.places.observe(this, Observer<Resource<List<EasyPlace>>> {
             dataBinding.resource = it
             if (it?.status == Resource.Status.SUCCESS) {
                 when {
-                    it.data == null -> setEmptySearch()
-                    it.isEmpty -> setEmptyPlaces()
+                    it.data == null -> fetchBookmarks()
+                    it.isEmpty -> setEmptySearch()
                     else -> setPlaces(it.data)
                 }
             }
@@ -81,6 +94,11 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
             place?.let {
                 it.bookmark = !it.bookmark
                 adapter?.notifyItemChanged(position)
+                if (it.bookmark) {
+                    bookmarkViewModel.addBookmark(it)
+                } else {
+                    bookmarkViewModel.removeBookmark(it)
+                }
             }
         }
         queryViewModel.value?.data?.observe(this, Observer<String> { query ->
@@ -99,11 +117,15 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
         adapter?.replace(places)
     }
 
-    private fun setEmptyPlaces() {
-        dataBinding.errorText.setText(R.string.no_address_found)
+    private fun fetchBookmarks() {
+        bookmarkViewModel.fetchBookmarks()
     }
 
     private fun setEmptySearch() {
+        dataBinding.errorText.setText(R.string.no_address_found)
+    }
+
+    private fun setEmptyQuery() {
         dataBinding.errorText.setText(R.string.search_address_content)
     }
 

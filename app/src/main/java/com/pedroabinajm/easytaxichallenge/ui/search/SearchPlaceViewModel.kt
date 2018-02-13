@@ -38,29 +38,33 @@ class SearchPlaceViewModel constructor(
         return execute(observableQuery.debounce(debounce, TimeUnit.MILLISECONDS)
                 .flatMap { query ->
                     places.postValue(Resource.loading(null))
-                    if (query.isBlank()) {
-                        return@flatMap Observable.just(mutableListOf<EasyPlace>())
-                    } else {
-                        return@flatMap placeAutocompleteProvider.getPlaces(query)
-                    }
+                    return@flatMap placeAutocompleteProvider.getPlaces(query)
                 }, {
-            places.postValue(Resource.success(it))
+            if (query.isBlank()) {
+                places.postValue(Resource.success(null))
+            } else {
+                places.postValue(Resource.success(it))
+            }
         }, {
             places.postValue(Resource.error(it))
-            setQuery()
         })
     }
 
     fun getLatLng(place: EasyPlace): Observable<EasyPlace> {
         this.place.postValue(Resource.loading(place))
-        return execute(placeAutocompleteProvider.getLatLang(place).map {
-            place.latitude = it.latitude
-            place.longitude = it.longitude
-            place
-        }, {
-            this.place.postValue(Resource.success(it))
-        }, {
-            this.place.postValue(Resource.error(it, place))
-        })
+        return if (place.latitude != 0.0) {
+            this.place.postValue(Resource.success(place))
+            Observable.just(place)
+        } else {
+            execute(placeAutocompleteProvider.getLatLang(place).map {
+                place.latitude = it.latitude
+                place.longitude = it.longitude
+                place
+            }, {
+                this.place.postValue(Resource.success(it))
+            }, {
+                this.place.postValue(Resource.error(it, place))
+            })
+        }
     }
 }

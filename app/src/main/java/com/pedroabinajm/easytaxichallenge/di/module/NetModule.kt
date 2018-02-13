@@ -99,4 +99,9 @@ class NetModule {
                     .baseUrl(apiConfig.baseUrl)
                     .client(okHttpClient)
                     .build()
+
+    @Provides
+    @Reusable
+    internal fun provideBookmarkServices(retrofit: Retrofit) =
+            retrofit.create<BookmarkServices>(BookmarkServices::class.java)
 }
