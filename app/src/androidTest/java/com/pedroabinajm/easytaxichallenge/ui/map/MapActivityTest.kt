@@ -6,16 +6,19 @@ import android.support.test.espresso.IdlingRegistry
 import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.contrib.RecyclerViewActions
 import android.support.test.espresso.idling.CountingIdlingResource
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
 import android.support.test.runner.AndroidJUnit4
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.pedroabinajm.easytaxichallenge.R
 import com.pedroabinajm.easytaxichallenge.utils.DrawableMatcher
+import com.pedroabinajm.easytaxichallenge.utils.RecyclerViewMatcher
 import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
@@ -101,6 +104,9 @@ class MapActivityTest {
     @Test
     fun favoriteLocationTest() {
         onView(withId(R.id.favorite_button))
+                .check(matches(withDrawable(R.drawable.ic_favorite_off)))
+
+        onView(withId(R.id.favorite_button))
                 .perform(click())
 
         onView(withId(R.id.alias_text))
@@ -124,7 +130,35 @@ class MapActivityTest {
                 .check(matches(withDrawable(R.drawable.ic_favorite_off)))
     }
 
+    @Test
+    fun pickPlaceTest() {
+        val placeNameText = onView(allOf(withId(R.id.place_name_text), isDisplayed()))
+        placeNameText.check(ViewAssertions.matches(withText("Rua Luis Gois, 206")))
+
+        onView(withId(R.id.place_view))
+                .perform(click())
+
+        val childAt0 = onView(withRecyclerView(R.id.places_recycler).atPosition(0))
+        childAt0.check(matches(hasDescendant(withText("Origem"))))
+        childAt0.check(matches(hasDescendant(withText("Avenida dos Ourives, 480, Pq. Bristol, Sao Paulo"))))
+        childAt0.check(matches(hasDescendant(withDrawable(R.drawable.ic_favorite_on))))
+
+        onView(withId(R.id.places_recycler))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                        click()))
+
+        placeNameText.check(ViewAssertions.matches(withText("Origem")))
+        onView(allOf(withId(R.id.place_description_text), isDisplayed()))
+                .check(ViewAssertions.matches(withText("Avenida dos Ourives, 480, Pq. Bristol, Sao Paulo")))
+        onView(withId(R.id.favorite_button))
+                .check(matches(withDrawable(R.drawable.ic_favorite_on)))
+    }
+
     private fun withDrawable(resourceId: Int): Matcher<View> {
         return DrawableMatcher(resourceId)
+    }
+
+    private fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
+        return RecyclerViewMatcher(recyclerViewId)
     }
 }
