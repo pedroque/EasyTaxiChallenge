@@ -10,4 +10,7 @@
     <string name="search_address_content">Search for a good place to go</string>
     <string name="no_address_found">No address found</string>
     <string name="bookmark_place">Bookmark place</string>
+    <string name="place_alias_description">What\'s your favorite place name?</string>
+    <string name="alias_hint">Place name</string>
+    <string name="invalid_place_alias">Invalid place alias</string>
 </resources>

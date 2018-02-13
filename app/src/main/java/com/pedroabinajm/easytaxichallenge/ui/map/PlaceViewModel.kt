@@ -33,4 +33,9 @@ class PlaceViewModel(
             place.value = Resource.error(it, null)
         })
     }
+
+    fun setPlace(place: EasyPlace) {
+        placeRepository.saveLastPlace(place)
+        this.place.value = Resource.success(place)
+    }
 }

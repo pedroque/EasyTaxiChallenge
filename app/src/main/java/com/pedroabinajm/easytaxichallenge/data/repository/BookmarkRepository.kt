@@ -6,6 +6,6 @@ import io.reactivex.Observable
 
 interface BookmarkRepository {
     fun getBookmarks(): Observable<List<EasyPlace>>
-    fun addBookmark(easyPlace: EasyPlace)
+    fun addBookmark(easyPlace: EasyPlace, alias: String)
     fun removeBookmark(easyPlace: EasyPlace)
 }

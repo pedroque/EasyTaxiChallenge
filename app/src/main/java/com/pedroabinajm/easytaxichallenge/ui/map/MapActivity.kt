@@ -26,6 +26,9 @@ import com.pedroabinajm.easytaxichallenge.extensions.addStatusBarMargin
 import com.pedroabinajm.easytaxichallenge.extensions.doOnCheckPermissions
 import com.pedroabinajm.easytaxichallenge.ui.base.BaseActivity
 import com.pedroabinajm.easytaxichallenge.ui.commons.Resource
+import com.pedroabinajm.easytaxichallenge.ui.search.BookmarkViewModel
+import com.pedroabinajm.easytaxichallenge.ui.search.BookmarkViewModelFactory
+import com.pedroabinajm.easytaxichallenge.ui.search.PlaceAliasDialog
 import com.pedroabinajm.easytaxichallenge.ui.search.SearchPlaceActivity
 import com.pedroabinajm.easytaxichallenge.utils.Constants
 import javax.inject.Inject
@@ -35,12 +38,16 @@ class MapActivity : BaseActivity() {
 
     private var map: GoogleMap? = null
     private lateinit var placeViewModel: PlaceViewModel
+    private lateinit var bookmarkViewModel: BookmarkViewModel
     private lateinit var dataBinding: ActivityMapBinding
     private var reason: Int = 0
     private var lastPlace = false
+    private var place: EasyPlace? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var bookmarkViewModelFactory: BookmarkViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,13 +80,14 @@ class MapActivity : BaseActivity() {
         } else if (requestCode == Constants.ReqCode.SEARCH_PLACE && resultCode == Activity.RESULT_OK) {
             val place = data?.getParcelableExtra<EasyPlace>(Constants.Arguments.PLACE)
             place?.let {
-                placeViewModel.fetchPlace(LatLng(place.latitude, place.longitude))
+                placeViewModel.setPlace(place)
             }
         }
     }
 
     private fun init() {
         placeViewModel = ViewModelProviders.of(this, viewModelFactory).get(PlaceViewModel::class.java)
+        bookmarkViewModel = ViewModelProviders.of(this, bookmarkViewModelFactory).get(BookmarkViewModel::class.java)
     }
 
     private fun setUpView() {
@@ -91,6 +99,30 @@ class MapActivity : BaseActivity() {
         dataBinding.myLocationButton.setOnClickListener {
             getCurrentPlace(false)
         }
+        dataBinding.favoriteButton.setOnClickListener {
+            place?.let {
+                if (!it.bookmark) {
+                    showAliasDialog(it)
+                } else {
+                    removeBookmark(it)
+                }
+            }
+        }
+    }
+
+    private fun removeBookmark(place: EasyPlace) {
+        bookmarkViewModel.removeBookmark(place)
+        place.bookmark = false
+        placeViewModel.setPlace(place)
+    }
+
+    private fun showAliasDialog(place: EasyPlace) {
+        PlaceAliasDialog.Builder()
+                .positiveButton { _, alias ->
+                    bookmarkViewModel.addBookmark(place, alias)
+                    placeViewModel.setPlace(place)
+                }
+                .show(supportFragmentManager)
     }
 
     private fun navigateToSearch() {
@@ -136,6 +168,7 @@ class MapActivity : BaseActivity() {
     private fun setUpObservers() {
         placeViewModel.place.observe(this, Observer<Resource<EasyPlace?>> {
             dataBinding.resource = it
+            place = it?.data
             if (it?.status == Resource.Status.SUCCESS) {
                 setMapLocation(it.data!!)
             } else if (it?.status == Resource.Status.ERROR) {

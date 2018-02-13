@@ -14,6 +14,7 @@ class BookmarkMapperImpl @Inject constructor() : BookmarkMapper {
                 bookmarkEntity.latitude,
                 bookmarkEntity.longitude,
                 null,
+                bookmarkEntity.name,
                 true
         )
     }

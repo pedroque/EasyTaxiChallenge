@@ -95,15 +95,32 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
                 it.bookmark = !it.bookmark
                 adapter?.notifyItemChanged(position)
                 if (it.bookmark) {
-                    bookmarkViewModel.addBookmark(it)
+                    showAliasDialog(it, position)
                 } else {
-                    bookmarkViewModel.removeBookmark(it)
+                    removeBookmark(it)
                 }
             }
         }
         queryViewModel.value?.data?.observe(this, Observer<String> { query ->
             searchPlaceViewModel.query = query!!
         })
+    }
+
+    private fun removeBookmark(place: EasyPlace) {
+        bookmarkViewModel.removeBookmark(place)
+    }
+
+    private fun showAliasDialog(place: EasyPlace, position: Int) {
+        PlaceAliasDialog.Builder()
+                .negativeButton {
+                    place.bookmark = false
+                    adapter?.notifyItemChanged(position)
+                }
+                .positiveButton { _, alias ->
+                    bookmarkViewModel.addBookmark(place, alias)
+                    searchPlaceViewModel.getLatLng(place)
+                }
+                .show(supportFragmentManager)
     }
 
     private fun pickPlace(place: EasyPlace) {
@@ -140,9 +157,6 @@ class SearchPlaceActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedLi
         dataBinding.placesRecycler.setHasFixedSize(true)
         dataBinding.placesRecycler.layoutManager = LinearLayoutManager(this)
         adapter = PlaceAdapter()
-        adapter?.clickSubject?.subscribe {
-
-        }
         adapter?.replace(mutableListOf())
         dataBinding.placesRecycler.adapter = adapter
     }

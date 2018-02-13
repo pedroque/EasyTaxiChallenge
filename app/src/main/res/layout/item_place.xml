@@ -57,8 +57,8 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{item.name}"
                     android:textStyle="bold"
+                    app:placeNameText="@{item}"
                     tools:text="Casa" />
 
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{item.description}"
+                    app:placeDescriptionText="@{item}"
                     tools:text="Rua Luis Gois, 206, Ap. 92" />
             </LinearLayout>
         </RelativeLayout>

@@ -24,8 +24,8 @@ class BookmarkViewModel constructor(
         })
     }
 
-    fun addBookmark(easyPlace: EasyPlace) {
-        bookmarkRepository.addBookmark(easyPlace)
+    fun addBookmark(easyPlace: EasyPlace, alias: String) {
+        bookmarkRepository.addBookmark(easyPlace, alias)
     }
 
     fun removeBookmark(easyPlace: EasyPlace) {

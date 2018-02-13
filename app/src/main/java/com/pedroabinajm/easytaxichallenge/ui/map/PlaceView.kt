@@ -51,8 +51,9 @@ class PlaceView : FrameLayout {
         @BindingAdapter("placeName")
         fun setPlaceName(textView: TextView, resource: Resource<EasyPlace?>?) {
             if (resource != null) {
+                val data = resource.data
                 when (resource.status) {
-                    Resource.Status.SUCCESS -> textView.text = resource.data?.name
+                    Resource.Status.SUCCESS -> textView.text = data?.alias?.let { it } ?: data?.name
                     Resource.Status.LOADING -> textView.setText(R.string.loading)
                     Resource.Status.ERROR -> textView.setText(resource.error?.friendlyMessage ?: R.string.unexpected_error)
                 }
@@ -66,9 +67,21 @@ class PlaceView : FrameLayout {
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
                         textView.visibility = View.GONE
-                        resource.data?.description?.let {
-                            textView.text = it
-                            textView.visibility = View.VISIBLE
+                        if (resource.data?.alias != null) {
+                            resource.data.name.let {
+                                resource.data.description?.let {
+                                    textView.text = listOf(resource.data.name, resource.data.description).joinToString(separator = ", ")
+                                    textView.visibility = View.VISIBLE
+                                } ?: resource.data.name.let {
+                                    textView.text = it
+                                    textView.visibility = View.VISIBLE
+                                }
+                            }
+                        } else {
+                            resource.data?.description?.let {
+                                textView.text = it
+                                textView.visibility = View.VISIBLE
+                            }
                         }
                     }
                     Resource.Status.LOADING -> textView.visibility = View.GONE

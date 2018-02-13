@@ -20,8 +20,9 @@ class BookmarkRepositoryImpl @Inject constructor(
         private val preferences: Preferences
 ) : BookmarkRepository {
 
-    override fun addBookmark(easyPlace: EasyPlace) {
+    override fun addBookmark(easyPlace: EasyPlace, alias: String) {
         easyPlace.bookmark = true
+        easyPlace.alias = alias
         placeDataSource.savePlace(easyPlace)
     }
 

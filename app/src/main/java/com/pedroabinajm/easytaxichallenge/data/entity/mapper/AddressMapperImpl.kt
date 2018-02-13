@@ -8,8 +8,7 @@ import javax.inject.Inject
 
 class AddressMapperImpl @Inject constructor() : AddressMapper {
     override fun transform(address: Address): EasyPlace {
-        val name = address.premises?.let { it } ?:
-                address.thoroughfare?.let {
+        val name = address.thoroughfare?.let {
                     address.subThoroughfare?.let {
                         listOf(address.thoroughfare, address.subThoroughfare).joinToString(separator = ", ")
                     } ?: it
@@ -26,6 +25,7 @@ class AddressMapperImpl @Inject constructor() : AddressMapper {
                 address.latitude,
                 address.longitude,
                 description,
+                address.premises,
                 false
         )
     }
