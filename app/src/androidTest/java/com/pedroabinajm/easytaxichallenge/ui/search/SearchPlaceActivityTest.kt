@@ -5,7 +5,6 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.UiController
 import android.support.test.espresso.ViewAction
 import android.support.test.espresso.action.ViewActions
-import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.contrib.RecyclerViewActions
 import android.support.test.espresso.matcher.ViewMatchers.*
@@ -72,20 +71,21 @@ class SearchPlaceActivityTest {
 
     @Test
     fun favoriteLocationTest() {
-        val childAt0 = onView(withRecyclerView(R.id.places_recycler).atPosition(0))
-        childAt0.check(matches(hasDescendant(withDrawable(R.drawable.ic_favorite_on))))
+        onView(withRecyclerView(R.id.places_recycler).atPosition(0))
+                .check(matches(hasDescendant(withDrawable(R.drawable.ic_favorite_on))))
 
         onView(withId(R.id.places_recycler))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
                         clickChildViewWithId(R.id.favorite_icon)))
 
-        childAt0.check(matches(hasDescendant(withDrawable(R.drawable.ic_favorite_off))))
+        Thread.sleep(100)
+
+        onView(withRecyclerView(R.id.places_recycler).atPosition(0))
+                .check(matches(hasDescendant(DrawableMatcher(R.drawable.ic_favorite_off))))
 
         onView(withId(R.id.places_recycler))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
                         clickChildViewWithId(R.id.favorite_icon)))
-
-        childAt0.check(matches(hasDescendant(withDrawable(R.drawable.ic_favorite_on))))
 
         onView(withId(R.id.alias_text))
                 .check(matches(isDisplayed()))
@@ -98,8 +98,6 @@ class SearchPlaceActivityTest {
         onView(withId(R.id.positive_button))
                 .perform(ViewActions.click())
 
-        childAt0.check(matches(hasDescendant(withDrawable(R.drawable.ic_favorite_on))))
-
     }
 
     private fun withDrawable(resourceId: Int): Matcher<View> {
@@ -110,7 +108,7 @@ class SearchPlaceActivityTest {
         return RecyclerViewMatcher(recyclerViewId)
     }
 
-    fun clickChildViewWithId(id: Int): ViewAction {
+    private fun clickChildViewWithId(id: Int): ViewAction {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View>? {
                 return null
