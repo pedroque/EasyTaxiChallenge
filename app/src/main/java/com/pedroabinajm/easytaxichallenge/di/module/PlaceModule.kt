@@ -1,7 +1,5 @@
 package com.pedroabinajm.easytaxichallenge.di.module
 
-import com.pedroabinajm.easytaxichallenge.data.cache.BookmarkCache
-import com.pedroabinajm.easytaxichallenge.data.cache.BookmarkCacheImpl
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDao
 import com.pedroabinajm.easytaxichallenge.data.dao.PlaceDaoImpl
 import com.pedroabinajm.easytaxichallenge.data.entity.mapper.AddressMapper
@@ -32,10 +30,6 @@ class PlaceModule {
     @Provides
     @Reusable
     internal fun providePlaceDao(placeDao: PlaceDaoImpl): PlaceDao = placeDao
-
-    @Provides
-    @Reusable
-    internal fun provideBookmarkCache(bookmarkCache: BookmarkCacheImpl): BookmarkCache = bookmarkCache
 
     @Provides
     @Reusable

@@ -1,7 +1,6 @@
 package com.pedroabinajm.easytaxichallenge.data.repository
 
 import com.pedroabinajm.easytaxichallenge.app.Preferences
-import com.pedroabinajm.easytaxichallenge.data.cache.BookmarkCache
 import com.pedroabinajm.easytaxichallenge.data.model.EasyPlace
 import com.pedroabinajm.easytaxichallenge.data.repository.datasource.BookmarkDataSource
 import com.pedroabinajm.easytaxichallenge.data.repository.datasource.PlaceDataSource
@@ -12,7 +11,6 @@ import javax.inject.Named
 
 class BookmarkRepositoryImpl @Inject constructor(
         private val placeDataSource: PlaceDataSource,
-        private val bookmarkCache: BookmarkCache,
         @Named("cloud")
         private val cloudBookmarkDataSource: BookmarkDataSource,
         @Named("cache")
@@ -36,14 +34,14 @@ class BookmarkRepositoryImpl @Inject constructor(
     }
 
     override fun getBookmarks(): Observable<List<EasyPlace>> {
-        return if (!bookmarkCache.fetched) {
+        return if (!preferences.bookmarksFetched) {
             cloudBookmarkDataSource.getBookmarks()
                     .map {
                         it.forEach { placeDataSource.savePlace(it) }
-                        bookmarkCache.fetched = true
+                        preferences.bookmarksFetched = true
                         it
                     }
-                    .mergeWith { cacheBookmarkDataSource.getBookmarks() }
+                    .mergeWith(cacheBookmarkDataSource.getBookmarks())
         } else {
             cacheBookmarkDataSource.getBookmarks()
         }
