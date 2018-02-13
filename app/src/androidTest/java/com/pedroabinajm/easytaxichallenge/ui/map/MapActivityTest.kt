@@ -3,8 +3,7 @@ package com.pedroabinajm.easytaxichallenge.ui.map
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.IdlingRegistry
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.action.ViewActions.swipeUp
+import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.idling.CountingIdlingResource
@@ -15,6 +14,7 @@ import android.support.test.runner.AndroidJUnit4
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.pedroabinajm.easytaxichallenge.R
+import com.pedroabinajm.easytaxichallenge.utils.DrawableMatcher
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
@@ -59,7 +59,7 @@ class MapActivityTest {
     }
 
     @Test
-    fun mapActivityTest() {
+    fun mapActivityInitialLocationTest() {
         val placeNameText = onView(allOf(withId(R.id.place_name_text), isDisplayed()))
         placeNameText.check(ViewAssertions.matches(withText("Rua Luis Gois, 206")))
 
@@ -71,21 +71,55 @@ class MapActivityTest {
 
         onView(allOf(withId(R.id.my_location_button), isDisplayed()))
                 .check(matches(isDisplayed()))
+    }
 
+    @Test
+    fun mapActivityMapLocationTest() {
         onView(withId(R.id.map))
                 .perform(swipeUp())
 
         Thread.sleep(1000)
 
-        placeNameText.check(matches(withText("Rua Luis Gois, 666")))
-        placeDescriptionText.check(matches(withText("Vila Mariana, Sao Paulo")))
+        onView(allOf(withId(R.id.place_name_text), isDisplayed()))
+                .check(matches(withText("Rua Luis Gois, 666")))
+        onView(allOf(withId(R.id.place_description_text), isDisplayed()))
+                .check(matches(withText("Vila Mariana, Sao Paulo")))
 
         onView(withId(R.id.my_location_button))
                 .perform(click())
 
         Thread.sleep(1000)
 
-        placeNameText.check(matches(withText("Rua Luis Gois, 206")))
-        placeDescriptionText.check(matches(withText("Vila Mariana, Sao Paulo")))
+        onView(allOf(withId(R.id.place_name_text), isDisplayed()))
+                .check(matches(withText("Rua Luis Gois, 206")))
+        onView(allOf(withId(R.id.place_description_text), isDisplayed()))
+                .check(matches(withText("Vila Mariana, Sao Paulo")))
+    }
+
+    @Test
+    fun favoriteLocationTest() {
+        onView(withId(R.id.favorite_button))
+                .perform(click())
+
+        onView(withId(R.id.alias_text))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.alias_text))
+                .perform(click())
+                .perform(typeText("Bookmark"))
+                .check(matches(withText("Bookmark")))
+
+        onView(withId(R.id.positive_button))
+                .perform(click())
+
+        onView(withId(R.id.favorite_button))
+                .check(matches(DrawableMatcher(R.drawable.ic_favorite_on)))
+
+        onView(withId(R.id.favorite_button))
+                .perform(click())
+
+        onView(withId(R.id.favorite_button))
+                .check(matches(DrawableMatcher(R.drawable.ic_favorite_off)))
+
     }
 }

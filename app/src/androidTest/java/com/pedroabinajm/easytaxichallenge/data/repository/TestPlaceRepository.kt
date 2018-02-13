@@ -14,6 +14,7 @@ class TestPlaceRepository @Inject constructor() : PlaceRepository {
                 -23.0,
                 -46.0,
                 "Vila Mariana, Sao Paulo",
+                null,
                 false
         )
         return Observable.just(place)
@@ -29,6 +30,7 @@ class TestPlaceRepository @Inject constructor() : PlaceRepository {
                 -23.5,
                 -46.5,
                 "Vila Mariana, Sao Paulo",
+                null,
                 false
         )
         return Observable.just(place)
