@@ -36,12 +36,11 @@ class BookmarkRepositoryImpl @Inject constructor(
     override fun getBookmarks(): Observable<List<EasyPlace>> {
         return if (!preferences.bookmarksFetched) {
             cloudBookmarkDataSource.getBookmarks()
-                    .map {
+                    .doOnNext {
                         it.forEach { placeDataSource.savePlace(it) }
                         preferences.bookmarksFetched = true
-                        it
                     }
-                    .mergeWith(cacheBookmarkDataSource.getBookmarks())
+                    .flatMap { cacheBookmarkDataSource.getBookmarks() }
         } else {
             cacheBookmarkDataSource.getBookmarks()
         }

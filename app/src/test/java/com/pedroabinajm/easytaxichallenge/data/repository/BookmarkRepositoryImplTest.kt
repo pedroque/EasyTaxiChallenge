@@ -82,18 +82,18 @@ class BookmarkRepositoryImplTest {
     fun getBookmarksGivenBookmarksNotFetched() {
         Mockito.`when`(preferences.bookmarksFetched)
                 .thenReturn(false)
-        val cacheBookmarks = listOf(EasyPlace(), EasyPlace(), EasyPlace())
-        Mockito.`when`(cacheBookmarkDataSource.getBookmarks())
-                .thenReturn(Observable.just(cacheBookmarks))
         val cloudBookmarks = listOf(EasyPlace(), EasyPlace())
         Mockito.`when`(cloudBookmarkDataSource.getBookmarks())
                 .thenReturn(Observable.just(cloudBookmarks))
+        val cacheBookmarks = listOf(EasyPlace(), EasyPlace(), EasyPlace()) + cloudBookmarks
+        Mockito.`when`(cacheBookmarkDataSource.getBookmarks())
+                .thenReturn(Observable.just(cacheBookmarks))
         val test = bookmarkRepository.getBookmarks()
                 .test()
         test.awaitTerminalEvent()
         test.assertNoErrors()
                 .assertComplete()
-                .assertValues(cloudBookmarks, cacheBookmarks)
+                .assertValue(cacheBookmarks)
         verify(preferences).bookmarksFetched = true
     }
 
